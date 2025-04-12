@@ -1,3 +1,4 @@
+# Provider for azurerm and helm
 provider "azurerm" {
   subscription_id = var.subscription_id
   features {}
@@ -24,10 +25,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type = "SystemAssigned"
   }
 
-  kubernetes_version = "1.29.2" # Możesz sprawdzić dostępne wersje
+  kubernetes_version = "1.29.2"
 
   oidc_issuer_enabled = true
-
 
   network_profile {
     network_plugin = "azure"
@@ -59,4 +59,55 @@ server:
     type: LoadBalancer
 EOF
   ]
+}
+
+resource "kubernetes_manifest" "argocd_app" {
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "Application"
+    metadata = {
+      name      = "my-app"
+      namespace = "argocd"
+    }
+    spec = {
+      project = "default"
+      source = {
+        repoURL = "https://github.com/V-Ader/Loyalty---Azure.git"
+        targetRevision = "HEAD"
+        path = "deploy/cards_api"  # or path to your Kubernetes manifests
+      }
+      destination = {
+        server = "https://kubernetes.default.svc"
+        namespace = "default"  # or wherever you want your app to be deployed
+      }
+      syncPolicy = {
+        automated = {
+          prune = true
+          selfHeal = true
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_secret" "acr-credentials" {
+  metadata {
+    name      = "acr-credentials"
+    namespace = var.argocd_namespace
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+
+  data = {
+    ".dockerconfigjson" = base64encode(jsonencode({
+      auths = {
+        "imageregistryaderkz.azurecr.io" = {
+          username = var.acr_username
+          password = var.acr_password
+          email    = "you@example.com"
+          auth     = base64encode("${var.acr_username}:${var.acr_password}")
+        }
+      }
+    }))
+  }
 }
