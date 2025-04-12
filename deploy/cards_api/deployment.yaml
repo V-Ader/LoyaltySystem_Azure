@@ -27,6 +27,8 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "1"
+      imagePullSecrets:
+        - name: acr-credentials
 ---
 apiVersion: v1
 kind: Service
