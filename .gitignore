@@ -1,0 +1,12 @@
+**/*.tfvars
+**/*.tfstate
+**/*.tfstate.backup
+**/.terraform
+**/*.tfplan
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/.terraformrc
+**/terraform.rc
+**/.terraform.lock.hcl
+**/.terraform-version
+**/.terraform.d
