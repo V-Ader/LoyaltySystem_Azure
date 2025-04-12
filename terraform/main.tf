@@ -90,24 +90,25 @@ resource "kubernetes_manifest" "argocd_app" {
   }
 }
 
-resource "kubernetes_secret" "acr-credentials" {
+resource "kubernetes_secret" "acr_credentials" {
   metadata {
     name      = "acr-credentials"
-    namespace = var.argocd_namespace
+    namespace = "default"
   }
 
   type = "kubernetes.io/dockerconfigjson"
 
   data = {
-    ".dockerconfigjson" = base64encode(jsonencode({
+    ".dockerconfigjson" = jsonencode({
       auths = {
         "imageregistryaderkz.azurecr.io" = {
           username = var.acr_username
           password = var.acr_password
-          email    = "you@example.com"
+          email    = "none"
           auth     = base64encode("${var.acr_username}:${var.acr_password}")
         }
       }
-    }))
+    })
   }
 }
+
