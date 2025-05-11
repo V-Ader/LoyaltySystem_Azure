@@ -1,114 +1,52 @@
-# Provider for azurerm and helm
 provider "azurerm" {
   subscription_id = var.subscription_id
   features {}
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "rg-k8s-argo"
-  location = "northeurope"
+module "resource_group" {
+  source = "./modules/resource_group"
+  name = "azure-functions-kz-rg"
+  location = var.location
 }
 
-resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "aks-argo"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = "aksargo"
+module "storage_account" {
+  source = "./modules/storage_account"
+  name = "azurefunctionskzsa"
+  resource_group = module.resource_group.name
+  location = var.location
 
-  default_node_pool {
-    name       = "default"
-    node_count = 2
-    vm_size    = "Standard_DS2_v2"
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  kubernetes_version = "1.29.2"
-
-  oidc_issuer_enabled = true
-
-  network_profile {
-    network_plugin = "azure"
-    load_balancer_sku = "standard"
-  }
+  depends_on = [module.resource_group]
 }
 
-provider "helm" {
-  kubernetes {
-    host                   = azurerm_kubernetes_cluster.aks.kube_config[0].host
-    client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_certificate)
-    client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_key)
-    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].cluster_ca_certificate)
-  }
+resource "random_string" "suffix" {
+  length  = 6
+  upper   = false
+  special = false
 }
 
-resource "helm_release" "argocd" {
-  name       = "argocd"
-  namespace  = "argocd"
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argo-cd"
-  version    = "5.51.6"
-
-  create_namespace = true
-
-  values = [<<EOF
-server:
-  service:
-    type: LoadBalancer
-EOF
-  ]
+module "app_service_plan" {
+  source         = "./modules/app_service_plan"
+  name           = "func-plan"
+  resource_group = module.resource_group.name
+  location       = module.resource_group.location
+  sku_name       = "Y1"
+  os_type        = "Linux"
 }
 
-resource "kubernetes_manifest" "argocd_app" {
-  manifest = {
-    apiVersion = "argoproj.io/v1alpha1"
-    kind       = "Application"
-    metadata = {
-      name      = "my-app"
-      namespace = "argocd"
-    }
-    spec = {
-      project = "default"
-      source = {
-        repoURL = "https://github.com/V-Ader/Loyalty---Azure.git"
-        targetRevision = "HEAD"
-        path = "deploy/cards_api"  # or path to your Kubernetes manifests
-      }
-      destination = {
-        server = "https://kubernetes.default.svc"
-        namespace = "default"  # or wherever you want your app to be deployed
-      }
-      syncPolicy = {
-        automated = {
-          prune = true
-          selfHeal = true
-        }
-      }
-    }
-  }
+module "application_insights" {
+  source         = "./modules/application_insights"
+  name           = "func-ai"
+  location       = module.resource_group.location
+  resource_group = module.resource_group.name
 }
 
-resource "kubernetes_secret" "acr_credentials" {
-  metadata {
-    name      = "acr-credentials"
-    namespace = "default"
-  }
-
-  type = "kubernetes.io/dockerconfigjson"
-
-  data = {
-    ".dockerconfigjson" = jsonencode({
-      auths = {
-        "imageregistryaderkz.azurecr.io" = {
-          username = var.acr_username
-          password = var.acr_password
-          email    = "none"
-          auth     = base64encode("${var.acr_username}:${var.acr_password}")
-        }
-      }
-    })
-  }
+module "function_echo" {
+  source                        = "./modules/function_echo"
+  name                          = "my-func-app-${random_string.suffix.result}"
+  location                      = module.resource_group.location
+  resource_group                = module.resource_group.name
+  storage_account_name          = module.storage_account.name
+  storage_account_access_key    = module.storage_account.primary_access_key
+  app_service_plan_id           = module.app_service_plan.id
+  insights_instrumentation_key = module.application_insights.instrumentation_key
 }
-
