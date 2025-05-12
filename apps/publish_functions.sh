@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # === CONFIGURATION ===
-RESOURCE_GROUP="azure-functions-kz-rg"                  # change as needed
-FUNCTION_APP_NAME="my-func-app-g3q9im"         # change as needed
+RESOURCE_GROUP="functions-new-kz-rg"                  # change as needed
+FUNCTION_APP_NAME="my-function-kz-echo-app"         # change as needed
 FUNCTION_NAME="function_echo"                    # name of your function folder
 
 # === PUBLISH FUNCTION ===
@@ -23,3 +23,5 @@ az functionapp function keys list \
   --function-name "$FUNCTION_NAME" \
   --query "{default: default, function: function}" \
   --output table
+
+echo ""

@@ -13,9 +13,13 @@ resource "azurerm_linux_function_app" "this" {
     }
   }
 
-  app_settings = {
-    FUNCTIONS_WORKER_RUNTIME       = "python"
-    APPINSIGHTS_INSTRUMENTATIONKEY = var.insights_instrumentation_key
-    WEBSITE_RUN_FROM_PACKAGE       = "1" # Lub wstaw URL do paczki ZIP, jeśli używasz deploymentu z blob storage
-  }
+  app_settings = merge(
+    {
+      "FUNCTIONS_WORKER_RUNTIME" = "python"
+      "APPINSIGHTS_INSTRUMENTATIONKEY" = var.insights_instrumentation_key
+      "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    },
+    var.app_settings
+  )
+
 }

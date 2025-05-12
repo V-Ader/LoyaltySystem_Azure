@@ -5,3 +5,8 @@ variable "storage_account_name" {}
 variable "storage_account_access_key" {}
 variable "app_service_plan_id" {}
 variable "insights_instrumentation_key" {}
+variable "app_settings" {
+  type    = map(string)
+  default = {}
+  description = "Application settings for the Azure Function"
+}
