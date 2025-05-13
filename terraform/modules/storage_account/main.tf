@@ -7,8 +7,6 @@ resource "azurerm_storage_account" "this" {
 
   network_rules {
     default_action             = "Allow"
-    # ip_rules                   = ["85.221.128.198"]
-    # bypass                     = ["AzureServices"]
   }
 }
 

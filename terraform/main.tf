@@ -14,8 +14,6 @@ module "storage_account" {
   name = "azurekzstorageaccount"
   resource_group = module.resource_group.name
   location = var.location
-
-  # depends_on = [module.resource_group]
 }
 
 module "app_service_plan" {
@@ -34,15 +32,15 @@ module "application_insights" {
   resource_group = module.resource_group.name
 }
 
-module "postgresql" {
-  source         = "./modules/postgresql"
-  name           = "pg-azure-db-kz-db"
-  location       = module.resource_group.location
-  resource_group = module.resource_group.name
+# module "postgresql" {
+#   source         = "./modules/postgresql"
+#   name           = "pg-azure-db-kz-db"
+#   location       = module.resource_group.location
+#   resource_group = module.resource_group.name
 
-  admin_username = "pgadminuser"
-  admin_password = "password1234"
-}
+#   admin_username = "pgadminuser"
+#   admin_password = "password1234"
+# }
 
 module "function_echo" {
   source                        = "./modules/function_echo"
@@ -54,9 +52,9 @@ module "function_echo" {
   app_service_plan_id           = module.app_service_plan.id
   insights_instrumentation_key = module.application_insights.instrumentation_key
 
-  app_settings = {
-    POSTGRES_HOST     = module.postgresql.fqdn
-    POSTGRES_USER     = "pgadminuser@pg-azure-db-kz-db"
-    POSTGRES_PASSWORD = "password1234"
-  }
+  # app_settings = {
+  #   POSTGRES_HOST     = module.postgresql.fqdn
+  #   POSTGRES_USER     = "pgadminuser@pg-azure-db-kz-db"
+  #   POSTGRES_PASSWORD = "password1234"
+  # }
 }
