@@ -11,7 +11,7 @@ module "resource_group" {
 
 module "storage_account" {
   source = "./modules/storage_account"
-  name = "azurekzstorageaccount"
+  name = "kzstorageaccount"
   resource_group = module.resource_group.name
   location = var.location
 }
@@ -57,4 +57,12 @@ module "function_echo" {
   #   POSTGRES_USER     = "pgadminuser@pg-azure-db-kz-db"
   #   POSTGRES_PASSWORD = "password1234"
   # }
+}
+
+module "frontend" {
+  source         = "./modules/frontend"
+  name           = "frontend"
+  location       = "westeurope"
+  resource_group = module.resource_group.name
+  github_token   = var.github_token
 }
