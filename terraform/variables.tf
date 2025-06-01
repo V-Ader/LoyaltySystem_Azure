@@ -9,13 +9,8 @@ variable "subscription_id" {
   sensitive   = true
 }
 
-variable "acr_username" {
-  description = "Username for logging into the acr"
-  type        = string
-}
-
-variable "acr_password" {
-  description = "Password for acr"
+variable "github_token" {
+  description = "github token"
   type        = string
   sensitive   = true
 }

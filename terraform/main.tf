@@ -11,7 +11,7 @@ module "resource_group" {
 
 module "storage_account" {
   source = "./modules/storage_account"
-  name = "kzstorageaccount"
+  name = "storageaccountkz2137"
   resource_group = module.resource_group.name
   location = var.location
 }
@@ -32,31 +32,25 @@ module "application_insights" {
   resource_group = module.resource_group.name
 }
 
-# module "postgresql" {
-#   source         = "./modules/postgresql"
-#   name           = "pg-azure-db-kz-db"
-#   location       = module.resource_group.location
-#   resource_group = module.resource_group.name
+module "postgresql" {
+  source         = "./modules/postgresql"
+  name           = "pg-azure-db-kz-db"
+  location       = module.resource_group.location
+  resource_group = module.resource_group.name
 
-#   admin_username = "pgadminuser"
-#   admin_password = "password1234"
-# }
+  admin_username = "pgadminuser"
+  admin_password = "password1234"
+}
 
-module "function_echo" {
-  source                        = "./modules/function_echo"
-  name                          = "my-function-kz-echo-app"
+module "function_api" {
+  source                        = "./modules/function_api"
+  name                          = "my-function-kz-api-app"
   location                      = module.resource_group.location
   resource_group                = module.resource_group.name
   storage_account_name          = module.storage_account.name
   storage_account_access_key    = module.storage_account.primary_access_key
   app_service_plan_id           = module.app_service_plan.id
   insights_instrumentation_key = module.application_insights.instrumentation_key
-
-  # app_settings = {
-  #   POSTGRES_HOST     = module.postgresql.fqdn
-  #   POSTGRES_USER     = "pgadminuser@pg-azure-db-kz-db"
-  #   POSTGRES_PASSWORD = "password1234"
-  # }
 }
 
 module "frontend" {

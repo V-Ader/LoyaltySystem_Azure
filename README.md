@@ -2,6 +2,19 @@
 
 # Deployment
 
+### Prepare faviables
+
+Create file terraform.tfvars in /terraform
+with following variables:
+
+```yaml
+subscription_id = ...
+location = ... f.e. "northeurope"
+
+github_token = ...
+
+```
+
 ### create infrastructure
 ```bash
 cd terraform
@@ -9,11 +22,17 @@ terraform init
 terraform apply
 ```
 
+Go to the Azure platform | _resource group_ | _db_ | options 
+        - > connect | allow to use public ip
+        - > network | Zezwalaj na dostęp publiczny z dowolnej usługi platformy Azure do tego serwera
+
+
 ### setup db
 ```bash
 cd scripts
 ./setup_db.sh
 ```
+
 
 ### publish functions
 ```bash

@@ -8,6 +8,10 @@ resource "azurerm_linux_function_app" "this" {
   https_only          = true
 
   site_config {
+    cors {
+      allowed_origins = ["*"]
+    }
+    
     application_stack {
       python_version = "3.10"
     }
@@ -21,5 +25,8 @@ resource "azurerm_linux_function_app" "this" {
     },
     var.app_settings
   )
+}
 
+output "function_app_id" {
+  value = azurerm_linux_function_app.this.id
 }
