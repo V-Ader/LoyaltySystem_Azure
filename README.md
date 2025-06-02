@@ -77,7 +77,7 @@ terraform init
 terraform apply
 ```
 ### Set up a public access for the database
-Go to the Azure platform | _resource group_ | _pg-azure-db-bz-db_ | options
+Go to the Azure platform | _resource group_ | _pg-azure-db-..._ | Options
 
 - Connect | 
   - Allow to use a public IP address
