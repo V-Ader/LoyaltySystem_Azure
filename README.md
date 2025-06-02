@@ -79,8 +79,10 @@ terraform apply
 ### Set up a public access for the database
 Go to the Azure platform | _resource group_ | _pg-azure-db-bz-db_ | options
 
-- > Connect | Allow to use a public IP address
-- > Network | Allow public access to this resource over the Internet using a public IP address
+- Connect | 
+  - Allow to use a public IP address
+- Network | 
+  - Allow public access to this resource over the Internet using a public IP address
 
 
 ## Set up db
