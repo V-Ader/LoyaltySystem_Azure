@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "type": "eventHubTrigger",
+      "name": "events",
+      "direction": "in",
+      "eventHubName": "my-eventhub-bz-kafka-logs",
+      "connection": "EVENT_HUB_CONN_LOGS_STR",
+      "consumerGroup": "$Default"
+    }
+  ]
+}

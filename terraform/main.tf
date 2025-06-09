@@ -5,20 +5,20 @@ provider "azurerm" {
 
 module "resource_group" {
   source = "./modules/resource_group"
-  name = "functions-new-kz-rg"
+  name = "functions-new-bz-rg"
   location = var.location
 }
 
 module "storage_account" {
   source = "./modules/storage_account"
-  name = "storageaccountkz2137"
+  name = "storageaccountkz06020999"
   resource_group = module.resource_group.name
-  location = var.location
+  location = module.resource_group.location
 }
 
 module "app_service_plan" {
   source         = "./modules/app_service_plan"
-  name           = "func-kz-plan"
+  name           = "func-bz-plan"
   resource_group = module.resource_group.name
   location       = module.resource_group.location
   sku_name       = "Y1"
@@ -27,14 +27,14 @@ module "app_service_plan" {
 
 module "application_insights" {
   source         = "./modules/application_insights"
-  name           = "func-kz-ai"
+  name           = "func-bz-ai"
   location       = module.resource_group.location
   resource_group = module.resource_group.name
 }
 
 module "postgresql" {
   source         = "./modules/postgresql"
-  name           = "pg-azure-db-kz-db"
+  name           = "pg-azure-db-bz-db"
   location       = module.resource_group.location
   resource_group = module.resource_group.name
 
@@ -44,7 +44,7 @@ module "postgresql" {
 
 module "function_api" {
   source                        = "./modules/function_api"
-  name                          = "my-function-kz-api-app"
+  name                          = "my-function-bz-api-app"
   location                      = module.resource_group.location
   resource_group                = module.resource_group.name
   storage_account_name          = module.storage_account.name
@@ -59,4 +59,11 @@ module "frontend" {
   location       = "westeurope"
   resource_group = module.resource_group.name
   github_token   = var.github_token
+}
+
+module "event_hub" {
+  source         = "./modules/event_hub"
+  name           = "my-eventhub-bz-kafka"
+  location       = module.resource_group.location
+  resource_group = module.resource_group.name
 }

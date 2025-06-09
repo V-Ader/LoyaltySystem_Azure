@@ -100,18 +100,21 @@ cd apps
 ----
 ----
 
+## Architecture diagram
+
+![Architecture](./arch_azure.png)
+
 # WYMAGANIA
 
 1. projekt musi być zrealizowany w oparciu o architekturę mikroserwisów (min. 3 węzły)
     1. API
-    2. Kafka consummer TODO (komunikacja asynchroniczna w przynajmniej jednym miejscu)
+    2. Kafka consummer (komunikacja asynchroniczna w przynajmniej jednym miejscu)
     3. Wykorzystanie usług SaaS w ramach dowolnej chmury (np. Azure Cognitive Services)
-    ? TODO
- 2. Architektura serverless lub w oparciu o kubernetes (lub podobną technologię) jak azure functions\
+ 2. Architektura serverless lub w oparciu o kubernetes (lub podobną technologię) jak azure functions
  3. Minimalny frontend (np. streamlit)
  4. Static page in storage account
  5. Infrastructure as Code (np. Terraform, ARM)
  terraform
  1. CI/CD (np. GitHub Actions, Azure DevOps)
- github Actions -> on mr to main deploy on cloud TODO
- 1. Diagram architektury (np. draw.io)
+ github Actions
+ 1. Diagram architektury

@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # === CONFIGURATION ===
-POSTGRESQL_HOST="pg-azure-db-kz-db.postgres.database.azure.com"  # Replace with your PostgreSQL host (IP or FQDN)
-POSTGRESQL_PORT="5432"                    # Default PostgreSQL port (change if necessary)
-POSTGRESQL_USER="pgadminuser"             # PostgreSQL admin user
-POSTGRESQL_PASSWORD="password1234"        # Replace with your PostgreSQL password
-DATABASE_NAME="mydatabase"                # Name of the database to create
-TABLE_NAME="cards"                        # Table to create
+POSTGRESQL_HOST="pg-azure-db-bz-db.postgres.database.azure.com" 
+POSTGRESQL_PORT="5432" 
+POSTGRESQL_USER="pgadminuser" 
+POSTGRESQL_PASSWORD="password1234" 
+DATABASE_NAME="mydatabase" 
+TABLE_NAME="cards"
 DB_CONNECTION_STRING="postgresql://$POSTGRESQL_USER:$POSTGRESQL_PASSWORD@$POSTGRESQL_HOST:$POSTGRESQL_PORT"
 
 # === CREATE DATABASE ===
@@ -23,6 +23,15 @@ psql "$PG_CONN_STR_WITH_DB" -c "CREATE TABLE $TABLE_NAME (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   tokens INTEGER NOT NULL
+);"
+
+psql "$PG_CONN_STR_WITH_DB" -c "CREATE TABLE logs (
+  id SERIAL PRIMARY KEY,
+  action VARCHAR(32) NOT NULL,
+  card_id INTEGER,
+  user_name VARCHAR(255),
+  log_message TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );"
 
 # === OUTPUT CONNECTION STRING ===

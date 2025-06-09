@@ -4,7 +4,7 @@ resource "azurerm_static_web_app" "frontend" {
   location            = var.location
 
   repository_branch              = "main"
-  repository_url      = "https://github.com/V-Ader/mock_page" # Replace with your GitHub repo URL
+  repository_url      = "https://github.com/bett-it/mock_page" # Replace with your GitHub repo URL
   repository_token = var.github_token # GitHub Personal Access Token for deployment
 }
 
